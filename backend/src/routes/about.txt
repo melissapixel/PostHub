@@ -1,0 +1,3 @@
+Карта адресов API
+
+(Адреса: /products, /products/:id)
