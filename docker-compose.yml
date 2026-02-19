@@ -1,11 +1,24 @@
 services:
+ 
+  # DB (PostgreSQL)
+  db:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: myapp_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./backend/database/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+  # PHP BACKEND
   php:
     build:
       context: .
       dockerfile: .docker/Dockerfile.php
       args:
-        # Передаем переменную из .env в Dockerfile
-        PHP_VERSION: ${PHP_VERSION}
+        PHP_VERSION: ${PHP_VERSION}                            # Передаем переменную из .env в Dockerfile
     container_name: myapp_php
     volumes:
       - ./backend:/app
@@ -14,3 +27,12 @@ services:
     ports:
       - "${PHP_PORT}:${PHP_PORT}"
     restart: unless-stopped
+
+# Хранилище для данных БД (чтобы не терялись при перезапуске)
+volumes:
+  db_data:
+
+# Сеть для связи контейнеров
+networks:
+  app_network:
+    driver: bridge

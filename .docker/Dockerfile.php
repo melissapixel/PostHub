@@ -1,10 +1,12 @@
-# Oбраз для PHP
-
-# Объявляем аргумент и задаем значение по умолчанию
 ARG PHP_VERSION=8.2
 
-# Используем аргумент в названии образа
 FROM php:${PHP_VERSION}-cli
+
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 WORKDIR /app
 
