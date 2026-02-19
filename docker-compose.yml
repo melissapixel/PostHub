@@ -1,10 +1,16 @@
-📄 docker-compose.yml
-│
-├─ Сервис "frontend":
-│   └─ Взять папку ./frontend, собрать её и открыть порт 80
-│
-├─ Сервис "backend":
-│   └─ Взять папку ./backend, запустить Node.js и открыть порт 5000
-│
-└─ Сервис "database":
-    └─ Запустить базу данных PostgreSQL и сохранить данные в папку ./data
+services:
+  php:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.php
+      args:
+        # Передаем переменную из .env в Dockerfile
+        PHP_VERSION: ${PHP_VERSION}
+    container_name: myapp_php
+    volumes:
+      - ./backend:/app
+    working_dir: /app/public
+    command: php -S 0.0.0.0:${PHP_PORT}
+    ports:
+      - "${PHP_PORT}:${PHP_PORT}"
+    restart: unless-stopped
