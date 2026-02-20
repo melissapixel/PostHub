@@ -1,4 +1,13 @@
 <?php
+require_once __DIR__ . '/../src/config/Cors.php';
+Cors::setHeaders();
+
+// Обрабатываем предзапрос (OPTIONS), который браузер делает перед POST/PUT
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 // Получаем путь (например, /api/posts или /api/posts/first-post)
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
